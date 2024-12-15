@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Remote Desktop</title>
+  <script>
+    const token = '__Daniel__#3875'
+    var ws = new WebSocket('ws://localhost:12550', ['json', `token-${token}`])
+    ws.onopen = () => {
+      console.log('Connected')
+    }
+    ws.onmessage = (event) => {
+      console.log(event.data)
+    }
+    ws.onclose = () => {
+      console.log('Disconnected')
+    }
+  </script>
+</head>
+<body>
+  <h1>Remote Desktop</h1>
+  <input type="number" id="x" placeholder="X" value="0">
+  <input type="number" id="y" placeholder="Y" value="0">
+  <button id="send" onclick="sendData()">Send</button>
+  <button id="close" onclick="ws.close()">Close</button>
+  <script>
+    const sendData = () => {
+      const x = document.getElementById('x').value;
+      const y = document.getElementById('y').value;
+      ws.send(JSON.stringify({ type: 'mousemove', x, y }))
+      console.log('Sent', x, y)
+    }
+  </script>
+</body>
+</html>

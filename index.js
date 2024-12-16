@@ -1,6 +1,13 @@
 import {WebSocketServer} from 'ws'
 import {URL} from 'url'
 import robot from "robotjs"
+import express from 'express'
+import path from 'path'
+import { fileURLToPath } from 'url';
+
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const wss = new WebSocketServer({port: 12550})
 
@@ -19,8 +26,8 @@ wss.on('connection', (ws, req) => {
 		const data = JSON.parse(message)
 
 		if (data.type === 'mousemove') { // {type: 'mousemove', x: 100, y: 100}
-			data.x = parseInt(data.x) || 0
-			data.y = parseInt(data.y) || 0
+			data.x = parseFloat(data.x) || 0
+			data.y = parseFloat(data.y) || 0
 			const current = robot.getMousePos()
 			console.log(`Moving mouse from (${current.x}, ${current.y}) to (${current.x + data.x}, ${current.y + data.y})`)
 			robot.moveMouse(current.x + data.x, current.y + data.y)
@@ -38,4 +45,18 @@ wss.on('connection', (ws, req) => {
 			ws.close()
 		}
 	})
+})
+
+const app = express()
+
+// Serve static files from the frontend build directory
+app.use(express.static(path.join(__dirname, 'frontend', 'dist')));
+
+// Catch-all route to serve index.html for all frontend routes
+app.get('*', (req, res) => {
+	res.sendFile(path.join(__dirname, 'frontend', 'dist', 'index.html'));
+});
+
+app.listen(12555, () => {
+	console.log('Server started on port 12555')
 })

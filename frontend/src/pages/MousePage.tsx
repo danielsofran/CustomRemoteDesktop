@@ -8,6 +8,7 @@ const dvwToPx = (dvw: number) => dvw * Math.min(window.innerWidth, window.innerH
 
 const MousePage: React.FC = () => {
   const ws = useRef<any>(null)
+  const mouseState = useRef<"up"|"down">("up")
 
   const [lastButton, setLastButton] = useState<"left"|"right">("left")
   const [sensitivity, setSensitivity] = useState(1)
@@ -44,7 +45,8 @@ const MousePage: React.FC = () => {
   }
 
   const onMouseToggle = () => {
-    send({type: "mousestate", button: lastButton})
+    mouseState.current = mouseState.current === "up" ? "down" : "up"
+    send({type: "mousestate", button: lastButton, state: mouseState.current})
   }
 
   return (

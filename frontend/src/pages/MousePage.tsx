@@ -1,42 +1,33 @@
-import {IonButton, IonCheckbox, IonContent, IonHeader, IonItemDivider, IonPage, IonRange, IonTitle, IonToolbar} from "@ionic/react"
-import ExploreContainer from '../components/ExploreContainer';
+import {IonAlert, IonButton, IonContent, IonHeader, IonPage, IonRange, IonTitle, IonToolbar} from "@ionic/react"
 import {Joystick} from "react-joystick-component"
 import {useEffect, useRef, useState} from "react"
 import {IJoystickUpdateEvent} from "react-joystick-component/build/lib/Joystick"
+import {useServerSocket} from "../hooks"
+import {useAppDispatch, useAppSelector} from "../store"
+import {preferencesSelector, setSensitivity as setReduxSensitivity} from "../reducers/preferences"
+import {savePreferencesToStorage} from "../storage/preferences"
 
 const dvwToPx = (dvw: number) => dvw * Math.min(window.innerWidth, window.innerHeight) / 100
 
 const MousePage: React.FC = () => {
-  const ws = useRef<any>(null)
+  const dispatch = useAppDispatch()
+  const preferences = useAppSelector(preferencesSelector)
+  const {send} = useServerSocket({
+    // reconnectOnClose: true,
+    onClose: (ws) => {
+      // setAlertMessage("Connection to server lost")
+      // const location = window.location.href
+      // setAlertOpen(location.includes("mouse") || location.includes("keyboard"))
+    }
+  })
   const mouseState = useRef<"up"|"down">("up")
 
+  const [alertOpen, setAlertOpen] = useState(false)
+  const [alertMessage, setAlertMessage] = useState("")
   const [lastButton, setLastButton] = useState<"left"|"right">("left")
-  const [sensitivity, setSensitivity] = useState(1)
-
-  useEffect(() => {
-    ws.current = new WebSocket(`ws://192.168.43.50:12550`, ["json", "token-__Daniel__#3875"])
-    ws.current.onopen = () => console.log("Connected")
-    ws.current.onclose = () => console.log("Disconnected")
-    return () => ws.current.close()
-  }, [])
-
-  // useEffect(() => {
-  //   if (!ws.current || ws.current.readyState !== WebSocket.OPEN){
-  //     // reconnect
-  //     ws.current = new WebSocket("ws://192.168.43.50:12550")
-  //     ws.current.onopen = () => console.log("Connected")
-  //     ws.current.onclose = () => console.log("Disconnected")
-  //     return () => ws.current.close()
-  //   }
-  // }, [ws.current])
-
-  const send = (data: Object) => {
-    if (ws.current.readyState === WebSocket.OPEN)
-      ws.current.send(JSON.stringify(data))
-  }
 
   const move = (ev: IJoystickUpdateEvent) => {
-    send({type: "mousemove", x: ev.x! * sensitivity, y: -(ev.y!) * sensitivity})
+    send({type: "mousemove", x: ev.x! * preferences.sensitivity, y: -(ev.y!) * preferences.sensitivity})
   }
 
   const onMouseClick = (button: "left" | "right") => {
@@ -47,6 +38,14 @@ const MousePage: React.FC = () => {
   const onMouseToggle = () => {
     mouseState.current = mouseState.current === "up" ? "down" : "up"
     send({type: "mousestate", button: lastButton, state: mouseState.current})
+  }
+
+  const onSensitiveChange = (ev: any) => {
+    // @ts-ignore
+    dispatch(setReduxSensitivity(ev.detail.value as number))
+    savePreferencesToStorage({...preferences, sensitivity: ev.detail.value as number})
+      .then(r => console.log("Saved preferences"))
+      .catch(err => console.error("Error saving preferences", err))
   }
 
   return (
@@ -86,11 +85,18 @@ const MousePage: React.FC = () => {
               step={0.1}
               pin={true}
               pinFormatter={value => `${value}x`}
-              value={sensitivity}
-              onIonChange={ev => setSensitivity(ev.detail.value as number)}
+              value={preferences.sensitivity}
+              onIonChange={onSensitiveChange}
             />
           </div>
         </div>
+        <IonAlert
+          isOpen={alertOpen}
+          onDidDismiss={() => setAlertOpen(false)}
+          header={'Alert'}
+          message={alertMessage}
+          buttons={['OK']}
+        />
       </IonContent>
     </IonPage>
   );

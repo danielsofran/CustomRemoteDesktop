@@ -2,9 +2,9 @@ import robot from 'robotjs'
 
 const {x, y} = robot.getMousePos()
 
-robot.scrollMouse(0, 1000)
-
-// robot.keyTap('A', ['alt']) //Not working
+// robot.scrollMouse(0, 1000)
+//
+robot.keyTap("backspace") //Not working
 
 // const {x, y} = robot.getMousePos()
 // robot.dragMouse(x + 100, y + 100)

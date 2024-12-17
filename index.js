@@ -41,16 +41,25 @@ wss.on('connection', (ws, req) => {
 		else if (data.type === 'mousestate') { // {type: 'mousestate', button: 'left', state: 'down'}
 			robot.mouseToggle(data.state, data.button)
 		}
-		else if (data.type === 'keypress') { // {type: 'keypress', key: 'a', modifier: ['alt', 'shift', 'control', 'command']}
-			// command = windows key
-			robot.keyTap(data.key, data.modifier)
+		else if (data.type === 'keypress') { // {type: 'keypress', key: 'a', modifiers: ['alt', 'shift', 'control', 'command']}
+			// command = windows ke
+			console.log(`Pressing key ${data.key} with modifiers ${data.modifiers}`, data)
+			try {
+				if (data.modifiers && data.modifiers.length > 0)
+					robot.keyTap(data.key, data.modifiers)
+				else
+					robot.keyTap(data.key)
+			}
+			catch (err) {
+				console.error(err)
+			}
 		}
 		else if (data.type === 'text') { // {type: 'text', text: 'Hello, World!'}
 			robot.typeString(data.text)
 		}
 		else if (data.type === 'volume') { // {type: 'volume', volume: 50, muted: false}
-			if (data.muted) loudness.setMuted(data.muted)
-			if (data.volume) loudness.setVolume(data.volume)
+			if (data.muted !== undefined && data.muted !== null) loudness.setMuted(data.muted)
+			if (data.volume !== undefined && data.volume !== null) loudness.setVolume(data.volume)
 		}
 		else if (data.type === 'light') { // {type: 'light', brightness: 50}
 			brightness.set(data.brightness/100)

@@ -10,9 +10,12 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ellipse, square, triangle } from 'ionicons/icons';
+import { settings } from 'ionicons/icons';
 import MousePage from './pages/MousePage';
 import KeyboardPage from './pages/KeyboardPage';
+import { Mouse as MouseIcon } from '@mui/icons-material';
+import KeyboardIcon from '@mui/icons-material/Keyboard';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -51,6 +54,7 @@ import {initialPreferences, setPreferences} from "./reducers/preferences"
 import {getHostsFromStorage} from "./storage/hosts"
 import {setHosts} from "./reducers/hosts"
 import {SettingsPage} from "./pages/SettingsPage"
+import VolumePage from "./pages/VolumePage"
 
 setupIonicReact();
 
@@ -94,6 +98,9 @@ const App: React.FC = () => {
             <Route exact path="/keyboard">
               <KeyboardPage/>
             </Route>
+            <Route exact path="/volume">
+              <VolumePage/>
+            </Route>
             <Route exact path="/settings">
               <SettingsPage/>
             </Route>
@@ -103,16 +110,16 @@ const App: React.FC = () => {
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
             <IonTabButton tab="mouse" href="/mouse">
-              {/*<IonIcon aria-hidden="true" icon={triangle} />*/}
-              <h5>Mouse</h5>
+              <MouseIcon/>
             </IonTabButton>
             <IonTabButton tab="keyboard" href="/keyboard">
-              {/*<IonIcon aria-hidden="true" icon={ellipse} />*/}
-              <h5>Keyboard</h5>
+              <KeyboardIcon/>
+            </IonTabButton>
+            <IonTabButton tab="volume" href="/volume">
+              <VolumeUpIcon/>
             </IonTabButton>
             <IonTabButton tab="settings" href="/settings">
-              {/*<IonIcon aria-hidden="true" icon={square} />*/}
-              <h5>Settings</h5>
+              <IonIcon aria-hidden="true" icon={settings} />
             </IonTabButton>
           </IonTabBar>
         </IonTabs>

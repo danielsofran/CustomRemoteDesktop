@@ -62,7 +62,7 @@ const MousePage: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         {/*CODE HERE*/}
-        <div style={{marginTop: 20, display: "flex", gap: 20, flexDirection: "column", justifyContent: "center", alignItems: "center", width: "100dvw"}}>
+        <div style={{marginTop: 20, display: "flex", gap: 10, flexDirection: "column", justifyContent: "center", alignItems: "center", width: "100dvw"}}>
           <Joystick
             size={dvwToPx(80)}
             stickSize={dvwToPx(10)}
@@ -70,8 +70,8 @@ const MousePage: React.FC = () => {
 
           />
           <div style={{display: "flex", alignItems: "center", gap: 20 }}>
-            <IonButton style={{fontSize: "2em"}} onClick={() => onMouseClick('left')}>LMB</IonButton>
-            <IonButton style={{fontSize: "2em"}} onClick={() => onMouseClick('right')}>RMB</IonButton>
+            <IonButton style={{fontSize: "1.5em"}} onClick={() => onMouseClick('left')}>LMB</IonButton>
+            <IonButton style={{fontSize: "1.5em"}} onClick={() => onMouseClick('right')}>RMB</IonButton>
           </div>
           <div style={{display: "flex", alignItems: "center", gap: 20 }}>
             <h1>{lastButton}</h1>

@@ -1,6 +1,10 @@
 {
-  "short_name": "Ionic App",
-  "name": "My Ionic App",
+  "short_name": "Remote Desktop",
+  "name": "Remote Desktop App",
+  "description": "Custom Remote Desktop App for Windows. Requires a server to be running on the target machine.",
+  "display": "standalone",
+  "orientation": "portrait",
+  "display_override": ["standalone", "minimal-ui", "browser", "fullscreen"],
   "icons": [
     {
       "src": "assets/icon/favicon.png",
@@ -15,7 +19,6 @@
     }
   ],
   "start_url": ".",
-  "display": "standalone",
   "theme_color": "#ffffff",
   "background_color": "#ffffff"
 }

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "web": "vite --host",
+    "web-preview": "vite preview --host",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test.e2e": "cypress run",
@@ -31,7 +32,8 @@
     "react-joystick-component": "^6.2.1",
     "react-redux": "^9.2.0",
     "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4"
+    "react-router-dom": "^5.3.4",
+    "vite-plugin-pwa": "^0.21.1"
   },
   "devDependencies": {
     "@capacitor/cli": "6.2.0",

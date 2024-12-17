@@ -23,12 +23,21 @@
   <input type="number" id="y" placeholder="Y" value="0">
   <button id="send" onclick="sendData()">Send</button>
   <button id="close" onclick="ws.close()">Close</button>
+
+  <input type="number" id="volume" placeholder="Volume" value="0">
+  <button id="send2" onclick="send2()">Send</button>
   <script>
     const sendData = () => {
       const x = document.getElementById('x').value;
       const y = document.getElementById('y').value;
       ws.send(JSON.stringify({ type: 'mousemove', x, y }))
       console.log('Sent', x, y)
+    }
+
+		const send2 = () => {
+      const volume = document.getElementById('volume').value;
+      ws.send(JSON.stringify({ type: 'volume', volume }))
+      console.log('Sent', volume)
     }
   </script>
 </body>

@@ -4,6 +4,9 @@ import robot from "robotjs"
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url';
+import loudness from "loudness";
+import brightness from "brightness";
+import { execSync } from 'child_process';
 
 // Get the directory name of the current module
 const __filename = fileURLToPath(import.meta.url);
@@ -38,9 +41,23 @@ wss.on('connection', (ws, req) => {
 		else if (data.type === 'mousestate') { // {type: 'mousestate', button: 'left', state: 'down'}
 			robot.mouseToggle(data.state, data.button)
 		}
-		else if (data.type === 'keypress') { // {type: 'keypress', key: 'a', modifier: ['alt', 'shift', 'control']}
+		else if (data.type === 'keypress') { // {type: 'keypress', key: 'a', modifier: ['alt', 'shift', 'control', 'command']}
+			// command = windows key
 			robot.keyTap(data.key, data.modifier)
 		}
+		else if (data.type === 'text') { // {type: 'text', text: 'Hello, World!'}
+			robot.typeString(data.text)
+		}
+		else if (data.type === 'volume') { // {type: 'volume', volume: 50, muted: false}
+			if (data.muted) loudness.setMuted(data.muted)
+			if (data.volume) loudness.setVolume(data.volume)
+		}
+		else if (data.type === 'light') { // {type: 'light', brightness: 50}
+			brightness.set(data.brightness/100)
+		}
+		// else if (data.type === 'script') { // {type: 'script', script: 'ls -la'}
+		// 	execSync(data.script)
+		// }
 		else if (data.type === 'stop') {
 			ws.close()
 		}
